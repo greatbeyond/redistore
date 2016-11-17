@@ -17,7 +17,7 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/securecookie"
-	"github.com/gorilla/sessions"
+	"github.com/shawnps/sessions"
 )
 
 // Amount of time for cookies/redis keys to expire.
@@ -223,7 +223,9 @@ func (s *RediStore) Close() error {
 //
 // See gorilla/sessions FilesystemStore.Get().
 func (s *RediStore) Get(r *http.Request, name string) (*sessions.Session, error) {
-	return sessions.GetRegistry(r).Get(s, name)
+	reg, req := sessions.GetRegistry(r)
+	*r = *req
+	return reg.Get(s, name)
 }
 
 // New returns a session for the given name without adding it to the registry.
